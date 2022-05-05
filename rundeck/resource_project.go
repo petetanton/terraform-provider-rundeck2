@@ -3,6 +3,7 @@ package rundeck
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -10,6 +11,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 	"github.com/rundeck/go-rundeck/rundeck"
+)
+
+const (
+	serviceNameRegex = `^[a-zA-Z0-9_+-][a-zA-Z0-9_+.-]+$`
 )
 
 var projectConfigAttributes = map[string]string{
@@ -32,10 +37,11 @@ func resourceRundeckProject() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Unique name for the project",
-				ForceNew:    true,
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "Unique name for the project",
+				ForceNew:     true,
+				ValidateFunc: projectNameValidator,
 			},
 
 			"description": {
@@ -306,4 +312,16 @@ func DeleteProject(d *schema.ResourceData, meta interface{}) error {
 	_, err := client.ProjectDelete(ctx, name)
 
 	return err
+}
+
+func projectNameValidator(v interface{}, k string) (we []string, errors []error) {
+	value := v.(string)
+	compile := regexp.MustCompile(serviceNameRegex)
+	valid := compile.MatchString(value)
+
+	if !valid {
+		errors = append(errors, fmt.Errorf("%s is an invalid value for argument %s. It must match %s", value, k, serviceNameRegex))
+	}
+
+	return nil, errors
 }
