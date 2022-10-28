@@ -22,7 +22,7 @@ var projectConfigAttributes = map[string]string{
 	"project.ssh-keypath":                   "ssh_key_file_path",
 }
 
-func dataSourcesProject() *schema.Resource {
+func dataSourceRundeckProject() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceProjectRead,
 		Schema: map[string]*schema.Schema{
