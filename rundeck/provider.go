@@ -2,72 +2,81 @@ package rundeck
 
 import (
 	"context"
-
-	"github.com/hashicorp-demoapp/hashicups-client-go"
+	"fmt"
+	"net/url"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/rundeck/go-rundeck/rundeck"
+	"github.com/rundeck/go-rundeck/rundeck/auth"
 )
 
 // Provider -
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"username": {
+			"url": {
 				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("HASHICUPS_USERNAME", nil),
+				Required:    true,
+				DefaultFunc: schema.EnvDefaultFunc("RUNDECK_URL", nil),
+				Description: "URL of the root of the target Rundeck server.",
 			},
-			"password": {
+			"api_version": {
 				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc("HASHICUPS_PASSWORD", nil),
+				Required:    true,
+				DefaultFunc: schema.EnvDefaultFunc("RUNDECK_API_VERSION", "14"),
+				Description: "API Version of the target Rundeck server.",
+			},
+			"auth_token": {
+				Type:        schema.TypeString,
+				Required:    true,
+				DefaultFunc: schema.EnvDefaultFunc("RUNDECK_AUTH_TOKEN", nil),
+				Description: "Auth token to use with the Rundeck API.",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"rundeck_project": resourceRundeckProject(),
 			"hashicups_order": resourceOrder(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"hashicups_coffees": dataSourceCoffees(),
 			"hashicups_order":   dataSourceOrder(),
+			"rundeck_project":   dataSourcesProject(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	username := d.Get("username").(string)
-	password := d.Get("password").(string)
+	urlP, _ := d.Get("url").(string)
+	apiVersion, _ := d.Get("api_version").(string)
+	token := d.Get("auth_token").(string)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	if (username != "") && (password != "") {
-		c, err := hashicups.NewClient(nil, &username, &password)
-		if err != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  "Unable to create HashiCups client",
-				Detail:   "Unable to auth user for authenticated HashiCups client",
-			})
-
-			return nil, diags
-		}
-
-		return c, diags
-	}
-
-	c, err := hashicups.NewClient(nil, nil, nil)
+	apiURLString := fmt.Sprintf("%s/api/%s", urlP, apiVersion)
+	apiURL, err := url.Parse(apiURLString)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create HashiCups client",
-			Detail:   "Unable to auth user for authenticated HashiCups client",
+			Summary:  "Failed to parse the API URL",
+			Detail:   fmt.Sprintf("Unable to parse: '%s' as a valid URL.", apiURLString),
 		})
-
 		return nil, diags
 	}
 
-	return c, diags
+	if token == "" {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "No token provider to access Rundeck",
+			Detail:   "Rundeck requires token based authentication.",
+		})
+		return nil, diags
+	}
+
+	client := rundeck.NewRundeckWithBaseURI(apiURL.String())
+	client.Authorizer = &auth.TokenAuthorizer{Token: token}
+
+	return &client, diags
 }

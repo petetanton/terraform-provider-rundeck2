@@ -1,50 +1,46 @@
 terraform {
   required_providers {
-    hashicups = {
+    rundeck = {
       version = "0.2"
       source  = "petetanton.com/namespace/rundeck"
     }
   }
 }
 
-provider "hashicups" {
-  username = "education"
-  password = "test123"
+provider "rundeck" {
+  url         = ""
+  api_version = "26"
+  auth_token  = ""
 }
 
-module "psl" {
-  source = "./coffee"
-
-  coffee_name = "Packer Spiced Latte"
+data "rundeck_project" "sre" {
+  name = "sre"
 }
 
-output "psl" {
-  value = module.psl.coffee
+# resource "rundeck_project" "test-project" {
+#   name        = "TestProject"
+#   description = "Nice one"
+#   resource_model_source {
+#     config = {
+#       "file"        = "/home/rundeck/node-provider.py"
+#       "format"      = "resourcejson"
+#       "interpreter" = "python3"
+#     }
+#     type = "script"
+#   }
+
+#   resource_model_source {
+#     config = {
+#       "format"      = "local"
+#     }
+#     type = "local"
+#   }
+# }
+
+output "sre" {
+  value = data.rundeck_project.sre
 }
 
-data "hashicups_order" "order" {
-  id = 1
-}
-
-output "order" {
-  value = data.hashicups_order.order
-}
-
-resource "hashicups_order" "edu" {
-  items {
-    coffee {
-      id = 3
-    }
-    quantity = 2
-  }
-  items {
-    coffee {
-      id = 2
-    }
-    quantity = 3
-  }
-}
-
-output "edu_order" {
-  value = hashicups_order.edu
-}
+# output "test" {
+#   value = rundeck_project.test-project
+# }
