@@ -5,6 +5,18 @@ go 1.18
 require github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.0
 
 require (
+	contrib.go.opencensus.io/exporter/ocagent v0.5.0 // indirect
+	github.com/Azure/go-autorest v11.2.1+incompatible // indirect
+	github.com/census-instrumentation/opencensus-proto v0.2.1 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.0 // indirect
+	go.opencensus.io v0.21.0 // indirect
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
+	google.golang.org/api v0.4.0 // indirect
+)
+
+require (
 	github.com/agext/levenshtein v1.2.2 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
@@ -33,6 +45,8 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/oklog/run v1.0.0 // indirect
+	github.com/pkg/errors v0.9.1
+	github.com/rundeck/go-rundeck/rundeck v0.0.0-20190510195016-2cf9670bbcc4
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
