@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "rundeck" {
-  url         = ""
+  url         = "https://rundeck.plat.dazn-dev.com"
   api_version = "26"
   auth_token  = ""
 }
