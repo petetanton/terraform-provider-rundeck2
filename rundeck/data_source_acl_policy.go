@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/pkg/errors"
 	"github.com/rundeck/go-rundeck/rundeck"
 )
 
@@ -38,7 +39,7 @@ func dataSourceAclRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	acl, err := client.SystemACLPolicyGet(ctx, name)
 	if err != nil {
-		return diag.FromErr(err)
+		return diag.FromErr(errors.Wrap(err, "failed to call client.SystemACLPolicyGet"))
 	}
 	if acl.StatusCode == 404 {
 		return diag.FromErr(fmt.Errorf("acl not found: (%s)", name))

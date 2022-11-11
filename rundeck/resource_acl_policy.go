@@ -108,5 +108,7 @@ func resourceAclPolicyDelete(ctx context.Context, d *schema.ResourceData, meta i
 		diag.FromErr(errors.Wrap(err, "failed to call client.SystemACLPolicyDelete"))
 	}
 
+	d.SetId("")
+
 	return diags
 }
