@@ -275,23 +275,6 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, meta inter
 	return diags
 }
 
-// func ProjectExists(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-// 	client := meta.(*rundeck.BaseClient)
-
-// 	name := d.Id()
-// 	resp, err := client.ProjectGet(ctx, name)
-// 	if err != nil {
-// 		return false, err
-// 	}
-
-// 	if resp.StatusCode == 404 {
-
-// 		return false, nil
-// 	}
-
-// 	return true, nil
-// }
-
 func resourceProjectDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*rundeck.BaseClient)
 
