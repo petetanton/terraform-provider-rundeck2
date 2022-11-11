@@ -112,8 +112,13 @@ func resourcePrivateKeyDelete(ctx context.Context, d *schema.ResourceData, meta 
 		// If the key type isn't private then as far as this resource is
 		// concerned it doesn't exist. (We'll fail properly when we try to
 		// create a key where one already exists.)
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  "Warning Message Summary",
+			Detail:   fmt.Sprintf("no private key found to delete on path (%s)", path),
+		})
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("no private key found to delete on path (%s)", path))
+		return diags
 	}
 
 	_, err = client.StorageKeyDelete(ctx, path)
