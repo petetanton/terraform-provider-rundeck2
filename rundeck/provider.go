@@ -38,12 +38,15 @@ func Provider() *schema.Provider {
 			"rundeck_project":     resourceRundeckProject(),
 			"rundeck_private_key": resourceRundeckPrivateKey(),
 			"hashicups_order":     resourceOrder(),
+			"rundeck_job":         resourceRundeckJob(),
+			"rundeck_acl":         resourceRundeckAclPolicy(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"hashicups_coffees":   dataSourceCoffees(),
 			"hashicups_order":     dataSourceOrder(),
-			"rundeck_project":     dataSourcesProject(),
+			"rundeck_project":     dataSourceRundeckProject(),
 			"rundeck_private_key": dataSourceRundeckPrivateKey(),
+			"rundeck_acl":         dataSourcesAcl(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
