@@ -37,6 +37,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"rundeck_project": resourceRundeckProject(),
 			"rundeck_job":     resourceRundeckJob(),
+			"rundeck_acl":     resourceRundeckAclPolicy(),
 			"hashicups_order": resourceOrder(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -44,6 +45,7 @@ func Provider() *schema.Provider {
 			"hashicups_order":   dataSourceOrder(),
 			"rundeck_project":   dataSourceRundeckProject(),
 			"rundeck_job":       dataSourceRundeckJob(),
+			"rundeck_acl":       dataSourcesAcl(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
