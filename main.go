@@ -9,6 +9,7 @@ import (
 
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
+		ProviderAddr: "registry.terraform.io/petetanton/rundeck",
 		ProviderFunc: func() *schema.Provider {
 			return rundeck.Provider()
 		},
