@@ -467,6 +467,11 @@ func resourceRundeckJobCommandJob() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"import_options": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "pass parent job options into step jobs",
+			},
 			"args": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -1138,6 +1143,7 @@ func jobCommandJobRefFromResourceData(key string, commandMap map[string]interfac
 		GroupName:      jobRefMap["group_name"].(string),
 		RunForEachNode: jobRefMap["run_for_each_node"].(bool),
 		Arguments:      JobCommandJobRefArguments(jobRefMap["args"].(string)),
+		ImportOptions:  jobRefMap["import_options"].(bool),
 	}
 	nodeFiltersI := jobRefMap["node_filters"].([]interface{})
 	if len(nodeFiltersI) > 1 {
@@ -1210,6 +1216,7 @@ func commandToResourceData(command *JobCommand) (map[string]interface{}, error) 
 			"group_name":        command.Job.GroupName,
 			"run_for_each_node": command.Job.RunForEachNode,
 			"args":              command.Job.Arguments,
+			"import_options":    command.Job.ImportOptions,
 		}
 		if command.Job.NodeFilter != nil {
 			nodeFilterConfigI := map[string]interface{}{

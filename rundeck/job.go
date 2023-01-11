@@ -297,6 +297,7 @@ type JobCommandJobRef struct {
 	Dispatch       *JobDispatch              `xml:"dispatch,omitempty"`
 	NodeFilter     *JobNodeFilter            `xml:"nodefilters,omitempty"`
 	Arguments      JobCommandJobRefArguments `xml:"arg"`
+	ImportOptions  bool                      `xml:"importOptions"`
 }
 
 // JobCommandJobRefArguments is a string representing the arguments in a JobCommandJobRef.
